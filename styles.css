@@ -118,7 +118,7 @@ a{ text-decoration: none;}
 
 @font-face {
   font-family: "Neutro";
-  src: url("/fonts/Neutro-Bold.woff2") format("woff2");
+  src: url("fonts/Neutro-Bold.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -309,7 +309,7 @@ nav a:hover, nav a:focus { color: var(--color-accent); outline: none; }
   padding: 1.6rem 1.8rem;
   box-shadow: 0 12px 45px rgba(0,0,0,0.25);
   color: var(--color-text-primary);
-  background-image:url(images/gif/here.gif) ;
+  background-image:url('images/gif/here.gif') ;
   border: 2px solid var(--lt-grey);
   background-size: cover;
   background-position: center;
