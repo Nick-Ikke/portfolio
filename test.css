@@ -1,0 +1,52 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    margin: 0 auto;
+    width: 95%;
+    height: 80vh;
+    display: flex;
+    justify-content: space-evenly;
+
+    /* Enable 3D space */
+    perspective: 1200px;
+}
+
+.revoler{
+    flex: 1;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: spin 6s linear infinite;
+}
+
+/* All 4 faces */
+.revoler .face{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background: brown;
+    border: 1px solid white;
+}
+
+/* 4 faces positioned around Y-axis */
+.f1{ transform: rotateY(0deg) translateZ(150px); }
+.f2{ transform: rotateY(90deg) translateZ(150px); }
+.f3{ transform: rotateY(180deg) translateZ(150px); }
+.f4{ transform: rotateY(270deg) translateZ(150px); }
+
+/* Rotation */
+@keyframes spin {
+    from{ transform: rotateY(0deg); }
+    to{ transform: rotateY(360deg); }
+}
+
+
+.revoler:nth-child(odd){
+    animation-delay: -2s;
+}
