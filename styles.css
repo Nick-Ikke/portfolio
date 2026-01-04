@@ -409,15 +409,15 @@ nav a:hover, nav a:focus { color: var(--color-accent); outline: none; }
 
 /* background images */
 .prj-Fu{
-  background-image:  url('./images/project_images/fu.png');
+  background-image:  url('images/project_images/fu.png');
   background-blend-mode: overlay;
 }
 .prj-Bp{
-  background-image:  url('/images/project_images/bp-light.png');
+  background-image:  url('images/project_images/bp-light.png');
   background-blend-mode: overlay;
 }
 .prj-Mc{
-  background-image:  url('/images/project_images/mn-light.png');
+  background-image:  url('images/project_images/mn-light.png');
   background-blend-mode: overlay;
 }
 
