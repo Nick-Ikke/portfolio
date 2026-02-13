@@ -139,6 +139,11 @@
                 <input type="text" id="name" name="name" required placeholder="Name..." autocomplete="name" />
                 <input type="email" id="email" name="email" required placeholder="Email..." autocomplete="email" />
                 <textarea id="message" name="message" required placeholder="How can I help you or do you just want to say hi..."></textarea>
+                <form>
+
+                <div class="h-captcha" data-captcha="true"  data-lang="de" data-theme="dark" data-onload="myFunction" data-render="explicit" data-size="compact"></div>
+
+                </form>
                 <button type="submit" id="send-btn">Send Message</button>
             </form>
             <footer>
@@ -154,5 +159,6 @@
 
     <noscript>Sorry, your browser does not support JavaScript!</noscript>
     <script src="script.js"></script>
+    <script src="https://web3forms.com/client/script.js" async defer></script>
 </body>
 </html>
