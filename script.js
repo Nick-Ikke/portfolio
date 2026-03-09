@@ -121,31 +121,28 @@ const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
   });
 })();
 
-
-const form = document.getElementById('contact-form');
+const contactForm = document.getElementById('contact-form');
 const btn = document.getElementById('send-btn');
 
-form.addEventListener('submit', function(e) {
-    e.preventDefault(); // Stop page reload
+// Only run if the form actually exists on the page
+if (contactForm && btn) {
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-    // 1. Validate Captcha
-    const hCaptcha = form.querySelector('[name="h-captcha-response"]');
-    if (!hCaptcha || !hCaptcha.value) {
-        alert("Please complete the captcha.");
-        return;
-    }
+        const hCaptcha = contactForm.querySelector('[name="h-captcha-response"]');
+        if (!hCaptcha || !hCaptcha.value) {
+            alert("Please complete the captcha.");
+            return;
+        }
 
-    // 2. UI Loading State
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
 
-    // 3. Prepare Data
-    const formData = new FormData(form);
-    const object = Object.fromEntries(formData);
-    const json = JSON.stringify(object);
+        const formData = new FormData(contactForm);
+        const object = Object.fromEntries(formData);
+        const json = JSON.stringify(object);
 
-    // 4. Send to Web3Forms
-    fetch('https://api.web3forms.com/submit', {
+        fetch('https://api.web3forms.com/submit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -155,26 +152,24 @@ form.addEventListener('submit', function(e) {
         })
         .then(async (response) => {
             if (response.status == 200) {
-                // Success UI
                 btn.textContent = 'Sent ✓';
-                form.reset();
+                contactForm.reset();
             } else {
                 btn.textContent = 'Error!';
             }
         })
         .catch(error => {
-            console.log(error);
+            console.error(error);
             btn.textContent = 'Error!';
         })
         .finally(() => {
-            // Reset button after a delay
             setTimeout(() => {
                 btn.disabled = false;
                 btn.textContent = 'Send Message';
             }, 3000);
         });
-});
-
+    });
+}
 
 (function focusStyle() {
   function handleFirstTab(e) {
