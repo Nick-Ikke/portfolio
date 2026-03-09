@@ -472,6 +472,9 @@ header nav ul{display: flex; gap: 2rem; list-style: none;}
 }
 #send-btn:hover { background: var(--green); color: var(--black); transform: translateY(-2px); }
 
+
+
+
 /* Footer */
 footer{
   display:flex; align-items:center; justify-content:space-between;

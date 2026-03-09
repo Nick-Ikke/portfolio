@@ -129,11 +129,7 @@ if (contactForm && btn) {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        const hCaptcha = contactForm.querySelector('[name="h-captcha-response"]');
-        if (!hCaptcha || !hCaptcha.value) {
-            alert("Please complete the captcha.");
-            return;
-        }
+
 
         btn.disabled = true;
         btn.textContent = 'Sending...';
