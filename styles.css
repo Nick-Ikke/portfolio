@@ -356,7 +356,7 @@ header nav ul{display: flex; gap: 2rem; list-style: none;}
     "prjt3 prjt2 prjt4";
   gap: .5rem;
 }
-#work div{box-shadow: 0 4px 6px var(--dropshadow);}
+#work div{box-shadow: 0 4px 6px var(--dropshadow) inset;}
 .prjt1{
   grid-area: prjt1;
   background-color: var(--green);
@@ -409,6 +409,7 @@ header nav ul{display: flex; gap: 2rem; list-style: none;}
   padding: .5rem 1rem;
   background-color: var(--black);
   color: var(--white);
+  box-shadow: 0 4px 6px var(--dropshadow);
   font-family: var(--heading-nav-font);
   font-size: .7rem;
   border: none;

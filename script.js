@@ -122,22 +122,58 @@ const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 })();
 
 
-const contactForm = document.forms['contact'];
-if (contactForm) {
-  contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const btn = $('#send-btn');
+const form = document.getElementById('contact-form');
+const btn = document.getElementById('send-btn');
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault(); // Stop page reload
+
+    // 1. Validate Captcha
+    const hCaptcha = form.querySelector('[name="h-captcha-response"]');
+    if (!hCaptcha || !hCaptcha.value) {
+        alert("Please complete the captcha.");
+        return;
+    }
+
+    // 2. UI Loading State
     btn.disabled = true;
     btn.textContent = 'Sending...';
-    // simulated send
-    setTimeout(() => {
-      btn.textContent = 'Sent ✓';
-      btn.disabled = false;
-      contactForm.reset();
-      setTimeout(() => btn.textContent = 'Send Message', 1400);
-    }, 900);
-  });
-}
+
+    // 3. Prepare Data
+    const formData = new FormData(form);
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    // 4. Send to Web3Forms
+    fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: json
+        })
+        .then(async (response) => {
+            if (response.status == 200) {
+                // Success UI
+                btn.textContent = 'Sent ✓';
+                form.reset();
+            } else {
+                btn.textContent = 'Error!';
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            btn.textContent = 'Error!';
+        })
+        .finally(() => {
+            // Reset button after a delay
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.textContent = 'Send Message';
+            }, 3000);
+        });
+});
 
 
 (function focusStyle() {
