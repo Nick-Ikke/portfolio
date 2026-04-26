@@ -148,7 +148,7 @@ if (contactForm && btn) {
         })
         .then(async (response) => {
             if (response.status == 200) {
-                btn.textContent = 'Sent ✓';
+                btn.textContent = 'Sent!';
                 contactForm.reset();
             } else {
                 btn.textContent = 'Error!';
