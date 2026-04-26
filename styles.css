@@ -475,7 +475,7 @@ path {
 }
 #contact canvas { position:absolute; inset:0; z-index:2; pointer-events:none; }
 #contact::before{ content:""; position:absolute; inset:0; z-index:3; pointer-events:none; }
-.contact-heading{color: var(--white); font-family: var(--handwriting-font); font-size: 4rem; justify-self: center; margin-bottom: 1rem;}
+.contact-heading{color: var(--white); font-family: var(--handwriting-font); font-size: 4rem; justify-self: center; margin-bottom: 1rem auto;}
 .form-container{
   position: relative;
   z-index:4; 
