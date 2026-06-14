@@ -1,26 +1,203 @@
 /* ====== Helpers ====== */
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
-const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
-/* ====== Hero role switch animation ====== */
-(function heroRoles() {
-  const roles = $$('.role');
-  let idx = 0;
+// Check for reduced motion preference (accessibility)
+const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function tick() {
-    roles.forEach((r, i) => r.classList.toggle('active', i === idx));
-    idx = (idx + 1) % roles.length;
+/* ====== Preloader ====== */
+// Runs first and independently so a later error (e.g. in GSAP setup)
+// can never prevent the preloader from completing and hiding.
+window.addEventListener('DOMContentLoaded', () => {
+  const progressBar = document.getElementById('progress-bar');
+  const preloader = document.getElementById('preloader');
+  if (!progressBar || !preloader) return;
+
+  // 1. Immediate jump to show progress has started
+  progressBar.style.width = '30%';
+
+  // 2. Slow "fake" crawl to 80% to keep the user engaged
+  // This simulates background activity
+  const slowFill = setInterval(() => {
+    // Get current width (strip the '%')
+    let currentWidth = parseFloat(progressBar.style.width);
+
+    if (currentWidth < 80) {
+      progressBar.style.width = (currentWidth + 2) + '%';
+    } else {
+      clearInterval(slowFill);
+    }
+  }, 400); // Adjust speed here
+
+  // 3. The Final Reveal
+  window.addEventListener('load', () => {
+    clearInterval(slowFill); // Stop the fake crawl
+    progressBar.style.width = '100%'; // Snap to finish
+
+    setTimeout(() => {
+      preloader.style.opacity = '0';
+      setTimeout(() => {
+        preloader.style.display = 'none';
+      }, 500);
+    }, 400);
+  });
+});
+
+/* ====== GSAP Setup ====== */
+if (!prefersReduced && typeof gsap !== 'undefined') {
+try {
+  gsap.registerPlugin(ScrollTrigger);
+  
+  // Performance optimizations for ScrollTrigger
+  ScrollTrigger.defaults({
+    markers: false,
+  });
+  
+  // Reduce motion for mobile devices
+  const isMobile = window.innerWidth < 768;
+  
+  /* ====== Hero Section Scroll Animations ====== */
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: '#hero',
+      start: 'top center',
+      end: 'center center',
+      scrub: false,
+      once: true
+    }
+  })
+  .from('.hero-h1', {
+    duration: 1.2,
+    opacity: 0,
+    y: 30,
+    ease: 'power2.out'
+  }, 0)
+  .from('.hero-p', {
+    duration: 1.2,
+    opacity: 0,
+    y: 30,
+    ease: 'power2.out'
+  }, 0.2)
+  .from('.hero-id', {
+    duration: 1.2,
+    opacity: 0,
+    scale: 0.95,
+    ease: 'power2.out'
+  }, 0);
+
+  /* ====== Project Cards Staggered Scroll Animation ====== */
+  gsap.to('.prjt1, .prjt2, .prjt3, .prjt4', {
+    scrollTrigger: {
+      trigger: '#work',
+      start: 'top 60%',
+      end: 'top 30%',
+      scrub: false,
+      once: true
+    },
+    duration: 1.2,
+    opacity: 1,
+    y: 0,
+    stagger: 0.15,
+    ease: 'power2.out',
+    clearProps: 'all'
+  });
+  
+  // Initial state for project cards
+  gsap.set('.prjt1, .prjt2, .prjt3, .prjt4', {
+    opacity: 0,
+    y: isMobile ? 20 : 40
+  });
+
+  /* ====== Section Heading Animation ====== */
+  gsap.from('.section-heading', {
+    scrollTrigger: {
+      trigger: '#work',
+      start: 'top 70%',
+      once: true
+    },
+    duration: 1.2,
+    opacity: 0,
+    x: -40,
+    ease: 'power2.out'
+  });
+
+  /* ====== Contact Section Animation ====== */
+  gsap.from('.contact-heading', {
+    scrollTrigger: {
+      trigger: '#contact',
+      start: 'top 70%',
+      once: true
+    },
+    duration: 1.2,
+    opacity: 0,
+    y: 30,
+    ease: 'power2.out'
+  });
+
+  /* ====== Contact Form Stagger Animation ====== */
+  gsap.from('#contact input, #contact textarea, #send-btn', {
+    scrollTrigger: {
+      trigger: '.form-container',
+      start: 'top 70%',
+      once: true
+    },
+    duration: 0.6,
+    opacity: 0,
+    y: 20,
+    stagger: 0.1,
+    ease: 'power2.out'
+  });
+
+  /* ====== Footer Fade In ====== */
+  gsap.from('#footer-info', {
+    scrollTrigger: {
+      trigger: 'footer',
+      start: 'top 80%',
+      once: true
+    },
+    duration: 1.2,
+    opacity: 0,
+    y: 20,
+    ease: 'power2.out'
+  });
+
+  /* ====== SVG Signature Draw Animation ====== */
+  const signaturePath = $('.signature-path path');
+  if (signaturePath) {
+    gsap.set(signaturePath, {
+      strokeDasharray: 'none',
+      stroke: 'currentColor',
+      fill: 'none',
+      strokeWidth: '1'
+    });
+    
+    const pathLength = signaturePath.getTotalLength();
+    gsap.set(signaturePath, {
+      strokeDasharray: pathLength,
+      strokeDashoffset: pathLength
+    });
+    
+    gsap.to(signaturePath, {
+      scrollTrigger: {
+        trigger: '.img-container',
+        start: 'top 60%',
+        end: 'top 40%',
+        scrub: 1,
+        once: true
+      },
+      strokeDashoffset: 0,
+      duration: 1.5,
+      ease: 'none'
+    });
   }
 
-  // prefer-reduced-motion respects user's settings
-  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!prefersReduced) {
-    tick();
-    setInterval(tick, 2000);
-  } else {
-    roles.forEach((r,i) => r.classList.toggle('active', i === 0));
-  }
-})();
+  // Refresh ScrollTrigger after images load for accurate positioning
+  window.addEventListener('load', () => {
+    ScrollTrigger.refresh();
+  });
+} catch (err) {
+  console.error('GSAP animation setup failed:', err);
+}
+}
 
 /* ====== Contact starfield canvas (sized to contact section) ====== */
 (function starfield() {
@@ -30,12 +207,16 @@ const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
   let w = 0, h = 0;
   let stars = [];
-  const numStars = 1600; 
   const speed = 0.9;
   const streaks = true;
   const warp = false;
 
+  function getStarCount() {
+    return window.innerWidth < 768 ? 600 : 1600;
+  }
+
   function initStars() {
+    const numStars = getStarCount();
     stars = Array.from({ length: numStars }, () => ({
       x: (Math.random() - 0.5) * w * 2,
       y: (Math.random() - 0.5) * h * 2,
@@ -176,37 +357,3 @@ if (contactForm && btn) {
   }
   window.addEventListener('keydown', handleFirstTab);
 })();
-
-window.addEventListener('DOMContentLoaded', () => {
-  const progressBar = document.getElementById('progress-bar');
-  
-  // 1. Immediate jump to show progress has started
-  progressBar.style.width = '30%';
-
-  // 2. Slow "fake" crawl to 80% to keep the user engaged
-  // This simulates background activity
-  const slowFill = setInterval(() => {
-    // Get current width (strip the '%')
-    let currentWidth = parseFloat(progressBar.style.width);
-    
-    if (currentWidth < 80) {
-      progressBar.style.width = (currentWidth + 2) + '%';
-    } else {
-      clearInterval(slowFill);
-    }
-  }, 400); // Adjust speed here
-
-  // 3. The Final Reveal
-  window.addEventListener('load', () => {
-    clearInterval(slowFill); // Stop the fake crawl
-    progressBar.style.width = '100%'; // Snap to finish
-
-    setTimeout(() => {
-      const preloader = document.getElementById('preloader');
-      preloader.style.opacity = '0';
-      setTimeout(() => {
-        preloader.style.display = 'none';
-      }, 500);
-    }, 400);
-  });
-});
